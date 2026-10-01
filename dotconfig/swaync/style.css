@@ -1,0 +1,84 @@
+/* Основные переменные под вашу тему */
+@define-color cc-bg #1e1e2ee6;
+@define-color notif-bg #1e1e2eff;
+@define-color notif-border #89b4f4ff;
+@define-color text-color #cdd6f4ff;
+@define-color select-bg #313244ff;
+@define-color accent #f38ba8ff;
+
+/* Общий вид центра уведомлений */
+.control-center {
+  background: @cc-bg;
+  border: 2px solid @notif-border;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  color: @text-color;
+  margin-top: 10px; /* Отступ от верхнего края экрана */
+}
+
+/* Заголовок */
+.widget-title {
+  color: @text-color;
+  font-size: 16px;
+  margin: 8px;
+}
+
+.widget-title button {
+  background: @select-bg;
+  color: @text-color;
+  border-radius: 8px;
+  padding: 4px 10px;
+  border: none;
+}
+
+.widget-title button:hover {
+  background: @accent;
+  color: #1e1e2e;
+}
+
+/* Карточки уведомлений */
+.notification {
+  background: @notif-bg;
+  border: 1px solid @notif-border;
+  border-radius: 12px;
+  padding: 10px;
+  margin: 6px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.notification-content {
+  color: @text-color;
+}
+
+.summary {
+  font-weight: bold;
+  font-size: 14px;
+  color: @text-color;
+}
+
+.body {
+  font-size: 12px;
+  color: #a6adc8;
+}
+
+/* Кнопка закрытия уведомления */
+.close-button {
+  background: @select-bg;
+  color: @text-color;
+  border-radius: 6px;
+  padding: 2px 6px;
+}
+
+.close-button:hover {
+  background: @accent;
+  color: #1e1e2e;
+}
+
+/* Виджеты (громкость, плейер) */
+.widget-volume, .widget-mpris, .widget-dnd {
+  background: @select-bg;
+  border-radius: 10px;
+  padding: 8px;
+  margin-top: 8px;
+}

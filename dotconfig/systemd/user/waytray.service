@@ -1,0 +1,9 @@
+[Unit]
+Description=WayTray System Tray Daemon
+
+[Service]
+ExecStart=/usr/bin/waytray-daemon
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
