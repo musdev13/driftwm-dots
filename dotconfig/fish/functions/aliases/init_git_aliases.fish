@@ -8,6 +8,7 @@ function init_git_aliases
 	alias gpp='git pull'
 	alias gf='git fetch'
 	alias gl='git log'
+	alias gcl='git clone'
 	alias gr='git restore'
 	alias grr='git reset'
 	alias gb='git branch'
