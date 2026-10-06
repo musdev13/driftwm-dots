@@ -827,6 +827,13 @@ scale = 1.0              # fractional scale (default: 1.0)
 transform = "normal"     # normal, 90, 180, 270, flipped, flipped-90, flipped-180, flipped-270
 position = "auto"        # "auto" (left-to-right) or [x, y] in layout coords
 mode = "max"       # "preferred", "max", "1920x1080", or "2560x1440@144"
+
+[[outputs]]
+name = "HDMI-A-2"
+scale = 1.0
+transform = "270"
+position = [360, 1800]
+mode = "max"
 # #
 # # [[outputs]]
 # # name = "HDMI-A-1"
