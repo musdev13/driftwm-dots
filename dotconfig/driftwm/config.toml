@@ -335,7 +335,7 @@ outer_gap = 24.0              # inset from the usable area's edge to a window's
 # # path = "~/Pictures/Wallpapers/tile.png"
 # #
 type = "wallpaper"  # single image fixed to viewport (does not scroll/zoom)
-path = "~/Pictures/wallpapers/japan.jpg"
+path = "~/Pictures/wallpapers/bbwallpaper.png"
 # #
 # # type = "none"  # render no built-in background (path ignored), so a
 # #                # wlr-layer-shell wallpaper daemon (swaybg, swww, mpvpaper for live video)
