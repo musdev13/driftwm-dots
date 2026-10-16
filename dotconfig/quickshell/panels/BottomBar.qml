@@ -1,6 +1,7 @@
 import Quickshell
 import QtQuick
 import "../config"
+import "../widgets/taskbar"
 
 PanelWindow {
     color: Globals.panelColor
@@ -12,4 +13,8 @@ PanelWindow {
     }
 
     implicitHeight: 48
+
+    TaskbarWidget {
+        anchors.centerIn: parent
+    }
 }
