@@ -2,6 +2,9 @@ import Quickshell
 import QtQuick
 import "../config"
 import "../widgets/clock"
+import "../widgets/cpu"
+import "../widgets/ram"
+import "../widgets/battery"
 
 PanelWindow {
     color: Globals.panelColor
@@ -14,7 +17,23 @@ PanelWindow {
 
     implicitHeight: 48
 
+    Row {
+        anchors.left: parent.left
+        anchors.leftMargin: Globals.barPadding
+        anchors.verticalCenter: parent.verticalCenter
+        spacing: Globals.panelRowSpacing
+
+        CpuWidget {}
+        RamWidget {}
+    }
+
     ClockWidget {
         anchors.centerIn: parent
+    }
+
+    BatteryWidget {
+        anchors.right: parent.right
+        anchors.rightMargin: Globals.barPadding
+        anchors.verticalCenter: parent.verticalCenter
     }
 }
