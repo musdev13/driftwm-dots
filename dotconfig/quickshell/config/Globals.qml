@@ -32,4 +32,36 @@ Singleton {
     property color batteryLowColor: "#ff5555"
     property color batteryMediumColor: "#f1fa8c"
     property color batteryHighColor: "#50fa7b"
+
+    property int notifWidth: 360
+    property int notifSpacing: 8
+    property int notifPadding: 12
+    property int notifMargin: 8
+    property color notifBgColor: "#e6202020"
+    property color notifTitleColor: "#ffffff"
+    property color notifBodyColor: "#cccccc"
+    property color notifAppNameColor: "#888888"
+    property int notifRadius: 8
+    property int notifTimeout: 5000
+    property int notifAnimationDuration: 200
+
+    property int notifAppIconSize: 20
+    property int notifImageRadius: 6
+    property int notifImageMaxHeight: 180
+
+    property color notifButtonBg: "#33ffffff"
+    property color notifButtonHoverBg: "#55ffffff"
+    property color notifButtonTextColor: "#ffffff"
+    property int notifButtonRadius: 6
+    property int notifButtonPaddingH: 12
+    property int notifButtonPaddingV: 6
+    property int notifButtonSpacing: 6
+
+    property color notifReplyBg: "#33ffffff"
+    property color notifReplyTextColor: "#ffffff"
+    property color notifReplyPlaceholderColor: "#888888"
+    property int notifReplyRadius: 6
+    property int notifReplyPadding: 8
+
+    property color notifCloseHoverColor: "#ff5555"
 }

@@ -31,7 +31,7 @@ Text {
             icon = "\u{f241}";
         else
             icon = "\u{f240}";
-        return icon + " " + Math.round(pct * 100) + "%";
+        return Math.round(pct * 100) + "%" + " " + icon;
     }
 
     color: {
