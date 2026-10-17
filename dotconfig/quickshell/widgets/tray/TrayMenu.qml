@@ -10,20 +10,24 @@ PopupWindow {
     property var anchorItem
     property string address: ""
     property var entries: []
+    property var _submenuEntries: []
+    property alias containsMouse: hoverHandler.hovered
 
-    function open() { visible = true; }
+    function open() {
+        _submenuEntries = [];
+        visible = true;
+    }
     function close() { visible = false; }
 
     visible: false
     color: "transparent"
-    grabFocus: true
+    grabFocus: false
 
     anchor.window: panelWindow
     anchor.rect.x: anchorItem ? anchorItem.mapToItem(null, 0, 0).x : 0
-    anchor.rect.y: anchorItem ? anchorItem.mapToItem(null, 0, 0).y - implicitHeight - 4 : 0
+    anchor.rect.y: -(contentRect.implicitHeight + 4)
     anchor.rect.width: anchorItem ? anchorItem.width : 0
     anchor.rect.height: anchorItem ? anchorItem.height : 0
-    anchor.edges: Edges.Bottom
 
     implicitWidth: contentRect.implicitWidth
     implicitHeight: contentRect.implicitHeight
@@ -32,48 +36,46 @@ PopupWindow {
         id: contentRect
         anchors.left: parent.left
         anchors.bottom: parent.bottom
-        implicitWidth: column.implicitWidth + 16
-        implicitHeight: column.implicitHeight + 8
+        implicitWidth: rowLayout.implicitWidth + 16
+        implicitHeight: rowLayout.implicitHeight + 8
         color: "#e6202020"
         radius: 8
 
-        Column {
-            id: column
+        HoverHandler {
+            id: hoverHandler
+        }
+
+        Row {
+            id: rowLayout
             anchors.centerIn: parent
-            spacing: 2
+            spacing: 4
 
-            Repeater {
-                model: root.entries
+            TrayMenuList {
+                id: level0
+                entries: root.entries
+                onItemHovered: function(entry) {
+                    root._submenuEntries = (entry.children && entry.children.length > 0) ? entry.children : [];
+                }
+                onItemClicked: function(id) {
+                    Services.Mshelld.trayMenuClick(root.address, id);
+                    root.close();
+                }
+            }
 
-                Rectangle {
-                    required property var modelData
+            Rectangle {
+                visible: root._submenuEntries.length > 0
+                width: 1
+                height: level0.implicitHeight
+                color: "#33ffffff"
+            }
 
-                    implicitWidth: labelText.implicitWidth + 16
-                    implicitHeight: labelText.implicitHeight + 4
-                    radius: 4
-                    color: itemMouse.containsMouse ? "#33ffffff" : "transparent"
-                    opacity: modelData.enabled ? 1.0 : 0.4
-
-                    Text {
-                        id: labelText
-                        anchors.centerIn: parent
-                        text: modelData.label || ""
-                        color: Config.Globals.widgetTextColor
-                        font.family: Config.Globals.widgetFontFamily
-                        font.pixelSize: Config.Globals.widgetFontSize
-                    }
-
-                    MouseArea {
-                        id: itemMouse
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        enabled: modelData.enabled
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            Services.Mshelld.trayMenuClick(root.address, modelData.id);
-                            root.close();
-                        }
-                    }
+            TrayMenuList {
+                id: level1
+                visible: root._submenuEntries.length > 0
+                entries: root._submenuEntries
+                onItemClicked: function(id) {
+                    Services.Mshelld.trayMenuClick(root.address, id);
+                    root.close();
                 }
             }
         }

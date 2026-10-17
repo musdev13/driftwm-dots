@@ -82,7 +82,7 @@ window_placement = "center"
 # # in addition to the autostart list above. To opt out:
 # #   systemctl --user mask xdg-desktop-autostart.target
 # # Example:
-autostart = ["wl-paste --watch cliphist store","qs"]
+autostart = ["wl-paste --watch cliphist store"]
 
 [session]
 # # Persist your canvas across restarts. Suspended windows are always saved to

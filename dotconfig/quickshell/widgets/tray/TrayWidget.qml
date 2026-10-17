@@ -11,10 +11,43 @@ Row {
     property var menuAnchorItem: null
     property string menuAddress: ""
     property var menuEntries: []
+    property string _hoverAddress: ""
 
     spacing: Config.Globals.trayItemSpacing
 
+    Timer {
+        id: openTimer
+        interval: 250
+        repeat: false
+        onTriggered: {
+            if (!root._hoverAddress) return;
+            for (var i = 0; i < itemsRepeater.count; i++) {
+                var it = itemsRepeater.itemAt(i);
+                if (it && it.modelData && it.modelData.address === root._hoverAddress) {
+                    if (!it.modelData.has_menu) return;
+                    root.menuAnchorItem = it;
+                    root.menuAddress = it.modelData.address;
+                    root.menuEntries = it.modelData.menu;
+                    menu.open();
+                    return;
+                }
+            }
+        }
+    }
+
+    Timer {
+        id: closeTimer
+        interval: 400
+        repeat: false
+        onTriggered: {
+            if (menu.containsMouse) return;
+            if (root._hoverAddress !== "") return;
+            menu.close();
+        }
+    }
+
     Repeater {
+        id: itemsRepeater
         model: Services.Mshelld.trayItems
 
         Rectangle {
@@ -49,20 +82,27 @@ Row {
                 id: trayMouse
                 anchors.fill: parent
                 hoverEnabled: true
-                acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+                acceptedButtons: Qt.LeftButton | Qt.MiddleButton
+
+                onEntered: {
+                    root._hoverAddress = trayItem.modelData.address;
+                    closeTimer.stop();
+                    if (trayItem.modelData.has_menu)
+                        openTimer.restart();
+                }
+
+                onExited: {
+                    if (root._hoverAddress === trayItem.modelData.address)
+                        root._hoverAddress = "";
+                    openTimer.stop();
+                    closeTimer.restart();
+                }
 
                 onClicked: function(mouse) {
                     var addr = trayItem.modelData.address;
                     if (mouse.button === Qt.LeftButton)
                         Services.Mshelld.trayActivate(addr);
-                    else if (mouse.button === Qt.RightButton) {
-                        if (trayItem.modelData.has_menu) {
-                            root.menuAnchorItem = trayItem;
-                            root.menuAddress = addr;
-                            root.menuEntries = trayItem.modelData.menu;
-                            menu.open();
-                        }
-                    } else if (mouse.button === Qt.MiddleButton)
+                    else if (mouse.button === Qt.MiddleButton)
                         Services.Mshelld.traySecondaryActivate(addr);
                 }
             }
@@ -75,5 +115,13 @@ Row {
         anchorItem: root.menuAnchorItem
         address: root.menuAddress
         entries: root.menuEntries
+
+        onContainsMouseChanged: {
+            if (containsMouse) {
+                closeTimer.stop();
+            } else if (root._hoverAddress === "") {
+                closeTimer.restart();
+            }
+        }
     }
 }
