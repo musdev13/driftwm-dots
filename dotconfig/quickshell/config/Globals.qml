@@ -6,6 +6,7 @@ import QtQuick
 Singleton {
     property color panelColor: "#202020"
     property color clockColor: "#ffffff"
+    property int clockSize: 16
 
     property color taskbarItemBg: "#00000000"
     property color taskbarItemHoverBg: "#33ffffff"

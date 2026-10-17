@@ -6,4 +6,5 @@ Text {
     text: Services.Time.time
     color: Config.Globals.clockColor
     font.bold: true
+    font.pixelSize: Config.Globals.clockSize
 }
