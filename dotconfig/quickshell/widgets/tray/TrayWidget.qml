@@ -31,9 +31,14 @@ Row {
                 anchors.centerIn: parent
                 width: Config.Globals.trayItemSize - 6
                 height: Config.Globals.trayItemSize - 6
-                source: trayItem.modelData.icon_name
-                    ? Quickshell.iconPath(trayItem.modelData.icon_name, true)
-                    : ""
+                source: {
+                    var item = trayItem.modelData;
+                    if (item.icon_name && item.icon_name.length > 0)
+                        return Quickshell.iconPath(item.icon_name, true);
+                    if (item.icon_pixmap_path && item.icon_pixmap_path.length > 0)
+                        return "file://" + item.icon_pixmap_path + "?v=" + item.address;
+                    return "";
+                }
                 sourceSize.width: width
                 sourceSize.height: height
                 smooth: true
