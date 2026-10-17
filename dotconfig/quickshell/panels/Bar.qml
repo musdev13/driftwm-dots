@@ -1,10 +1,13 @@
 import Quickshell
 import QtQuick
 import "../config"
+import "../widgets"
 import "../widgets/clock"
 import "../widgets/cpu"
 import "../widgets/ram"
 import "../widgets/battery"
+import "../widgets/audio"
+import "../widgets/divider"
 import "NotificationPopup.qml"
 
 Scope {
@@ -27,18 +30,32 @@ Scope {
             anchors.verticalCenter: parent.verticalCenter
             spacing: Globals.panelRowSpacing
 
-            CpuWidget {}
-            RamWidget {}
+            GroupWidget {
+                anchors.verticalCenter: parent.verticalCenter
+                CpuWidget {}
+                RamWidget {}
+            }
         }
 
         ClockWidget {
             anchors.centerIn: parent
         }
 
-        BatteryWidget {
+        Row {
             anchors.right: parent.right
             anchors.rightMargin: Globals.barPadding
             anchors.verticalCenter: parent.verticalCenter
+            spacing: Globals.panelRowSpacing
+
+            GroupWidget {
+                anchors.verticalCenter: parent.verticalCenter
+                VolumeWidget {}
+                MicWidget {}
+            }
+
+            DividerWidget { anchors.verticalCenter: parent.verticalCenter }
+
+            BatteryWidget { anchors.verticalCenter: parent.verticalCenter }
         }
     }
 

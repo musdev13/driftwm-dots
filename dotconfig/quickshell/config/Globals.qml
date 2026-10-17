@@ -33,6 +33,14 @@ Singleton {
     property color batteryMediumColor: "#f1fa8c"
     property color batteryHighColor: "#50fa7b"
 
+    property color audioMutedColor: "#ff5555"
+
+    property color groupBgColor: "#12efffff"
+    property int groupRadius: 8
+    property int groupPaddingH: 10
+    property int groupPaddingV: 6
+    property int groupSpacing: 8
+
     property int notifWidth: 360
     property int notifSpacing: 8
     property int notifPadding: 12
