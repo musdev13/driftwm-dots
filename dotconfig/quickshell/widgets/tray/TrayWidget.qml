@@ -1,17 +1,21 @@
 import QtQuick
 import Quickshell
-import Quickshell.Services.SystemTray
 import "../../config" as Config
+import "../../services" as Services
+import "TrayMenu.qml"
 
 Row {
     id: root
 
     property var panelWindow
+    property var menuAnchorItem: null
+    property string menuAddress: ""
+    property var menuEntries: []
 
     spacing: Config.Globals.trayItemSpacing
 
     Repeater {
-        model: SystemTray.items
+        model: Services.Mshelld.trayItems
 
         Rectangle {
             id: trayItem
@@ -27,7 +31,9 @@ Row {
                 anchors.centerIn: parent
                 width: Config.Globals.trayItemSize - 6
                 height: Config.Globals.trayItemSize - 6
-                source: trayItem.modelData.icon
+                source: trayItem.modelData.icon_name
+                    ? Quickshell.iconPath(trayItem.modelData.icon_name, true)
+                    : ""
                 sourceSize.width: width
                 sourceSize.height: height
                 smooth: true
@@ -41,26 +47,28 @@ Row {
                 acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
                 onClicked: function(mouse) {
+                    var addr = trayItem.modelData.address;
                     if (mouse.button === Qt.LeftButton)
-                        trayItem.modelData.activate();
+                        Services.Mshelld.trayActivate(addr);
                     else if (mouse.button === Qt.RightButton) {
-                        if (trayItem.modelData.hasMenu)
+                        if (trayItem.modelData.has_menu) {
+                            root.menuAnchorItem = trayItem;
+                            root.menuAddress = addr;
+                            root.menuEntries = trayItem.modelData.menu;
                             menu.open();
+                        }
                     } else if (mouse.button === Qt.MiddleButton)
-                        trayItem.modelData.secondaryActivate();
+                        Services.Mshelld.traySecondaryActivate(addr);
                 }
             }
-
-            QsMenuAnchor {
-                id: menu
-                menu: trayItem.modelData.menu
-                anchor.window: root.panelWindow
-                anchor.rect.x: trayItem.mapToItem(null, 0, 0).x
-                anchor.rect.y: trayItem.mapToItem(null, 0, 0).y
-                anchor.rect.width: trayItem.width
-                anchor.rect.height: trayItem.height
-                anchor.edges: Edges.Top
-            }
         }
+    }
+
+    TrayMenu {
+        id: menu
+        panelWindow: root.panelWindow
+        anchorItem: root.menuAnchorItem
+        address: root.menuAddress
+        entries: root.menuEntries
     }
 }

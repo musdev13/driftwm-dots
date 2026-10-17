@@ -1,23 +1,14 @@
 import QtQuick
 import Quickshell
-import Quickshell.Services.Pipewire
 import "../../config" as Config
+import "../../services" as Services
 
 Text {
     id: root
 
-    readonly property var source: Pipewire.defaultAudioSource
-    readonly property bool muted: source && source.audio ? source.audio.muted : false
-    readonly property real volume: source && source.audio ? source.audio.volume : 0
-
-    function toggleMute() {
-        if (root.source && root.source.audio)
-            root.source.audio.muted = !root.source.audio.muted;
-    }
-
-    PwObjectTracker {
-        objects: Pipewire.defaultAudioSource ? [ Pipewire.defaultAudioSource ] : []
-    }
+    readonly property var source: Services.Mshelld.audio.source
+    readonly property bool muted: source ? source.muted : false
+    readonly property real volume: source ? source.volume : 0
 
     text: {
         if (muted)
@@ -32,6 +23,6 @@ Text {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        onClicked: root.toggleMute()
+        onClicked: Services.Mshelld.toggleSourceMute()
     }
 }

@@ -1,0 +1,14 @@
+[Unit]
+Description=mshelld - system integration daemon (tray, audio, battery, notifications)
+After=dbus.service
+Wants=dbus.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/mshelld
+Restart=on-failure
+RestartSec=2
+StandardError=journal
+
+[Install]
+WantedBy=default.target

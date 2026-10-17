@@ -1,18 +1,16 @@
 import QtQuick
 import Quickshell
-import Quickshell.Services.UPower
 import "../../config" as Config
+import "../../services" as Services
 
 Text {
     id: root
 
-    readonly property var device: UPower.displayDevice
-    readonly property real pct: device && device.ready ? device.percentage : 0
-    readonly property bool charging: device
-        && (device.state === UPowerDeviceState.Charging
-            || device.state === UPowerDeviceState.FullyCharged
-            || device.state === UPowerDeviceState.PendingCharge)
-    readonly property bool present: device && device.isLaptopBattery && device.ready
+    readonly property var bat: Services.Mshelld.battery
+    readonly property bool present: bat && bat.present === true
+    readonly property real pct: bat && bat.percentage !== undefined ? bat.percentage : 0
+    readonly property string state: bat && bat.state ? bat.state : ""
+    readonly property bool charging: state === "Charging" || state === "Full"
 
     visible: present
 

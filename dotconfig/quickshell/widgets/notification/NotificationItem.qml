@@ -2,18 +2,18 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Services.Notifications
 import "../../config" as Config
+import "../../services" as Services
 
 Item {
     id: root
 
     required property var notification
 
-    readonly property int urgency: notification.urgency
-    readonly property bool hasImage: notification.image && notification.image.length > 0
+    readonly property int urgency: notification.urgency !== undefined ? notification.urgency : 1
+    readonly property bool hasImage: notification.image_path && notification.image_path.length > 0
     readonly property bool hasActions: notification.actions && notification.actions.length > 0
-    readonly property bool hasReply: notification.hasInlineReply
+    readonly property bool hasReply: notification.has_inline_reply === true
 
     property real dragOffset: 0
 
@@ -21,24 +21,28 @@ Item {
     implicitHeight: card.implicitHeight
     opacity: 1 - Math.min(1, Math.abs(dragOffset) / Math.max(1, width))
 
+    function dismiss() {
+        Services.Mshelld.dismissNotification(root.notification.id);
+    }
+
     Rectangle {
         id: card
         anchors.fill: parent
         transform: Translate { x: root.dragOffset }
         radius: Config.Globals.notifRadius
         color: Config.Globals.notifBgColor
-        border.width: root.urgency === NotificationUrgency.Critical ? 1 : 0
+        border.width: root.urgency === 2 ? 1 : 0
         border.color: Config.Globals.batteryLowColor
 
         implicitHeight: content.implicitHeight + Config.Globals.notifPadding * 2
 
         Timer {
-            interval: root.notification.expireTimeout > 0
-                ? root.notification.expireTimeout
+            interval: root.notification.expire_timeout > 0
+                ? root.notification.expire_timeout
                 : Config.Globals.notifTimeout
-            running: root.urgency !== NotificationUrgency.Critical && !dragHandler.active
+            running: root.urgency !== 2 && !dragHandler.active
             repeat: false
-            onTriggered: root.notification.dismiss()
+            onTriggered: root.dismiss()
         }
 
         ColumnLayout {
@@ -57,8 +61,8 @@ Item {
                     Layout.preferredWidth: Config.Globals.notifAppIconSize
                     Layout.preferredHeight: Config.Globals.notifAppIconSize
                     Layout.alignment: Qt.AlignVCenter
-                    source: root.notification.appIcon && root.notification.appIcon.length > 0
-                        ? Quickshell.iconPath(root.notification.appIcon, "dialog-information")
+                    source: root.notification.app_icon && root.notification.app_icon.length > 0
+                        ? Quickshell.iconPath(root.notification.app_icon, "dialog-information")
                         : ""
                     sourceSize.width: Config.Globals.notifAppIconSize
                     sourceSize.height: Config.Globals.notifAppIconSize
@@ -70,7 +74,7 @@ Item {
                 Text {
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignVCenter
-                    text: root.notification.appName || ""
+                    text: root.notification.app_name || ""
                     color: Config.Globals.notifAppNameColor
                     font.family: Config.Globals.widgetFontFamily
                     font.pixelSize: Config.Globals.widgetFontSize - 2
@@ -93,7 +97,7 @@ Item {
                         anchors.margins: -4
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: root.notification.dismiss()
+                        onClicked: root.dismiss()
                     }
                 }
             }
@@ -113,7 +117,7 @@ Item {
 
                     Image {
                         anchors.fill: parent
-                        source: root.notification.image
+                        source: root.hasImage ? "file://" + root.notification.image_path : ""
                         sourceSize.width: 40
                         sourceSize.height: 40
                         fillMode: Image.PreserveAspectCrop
@@ -172,7 +176,7 @@ Item {
                         Text {
                             id: actionText
                             anchors.centerIn: parent
-                            text: actionBtn.modelData.text || ""
+                            text: actionBtn.modelData.label || ""
                             color: Config.Globals.notifButtonTextColor
                             font.family: Config.Globals.widgetFontFamily
                             font.pixelSize: Config.Globals.widgetFontSize - 2
@@ -183,7 +187,7 @@ Item {
                             anchors.fill: parent
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: actionBtn.modelData.invoke()
+                            onClicked: Services.Mshelld.invokeNotificationAction(root.notification.id, actionBtn.modelData.key)
                         }
                     }
                 }
@@ -202,7 +206,7 @@ Item {
                     id: replyField
                     anchors.fill: parent
                     anchors.margins: Config.Globals.notifReplyPadding
-                    placeholderText: root.notification.inlineReplyPlaceholder || "Reply..."
+                    placeholderText: root.notification.inline_reply_placeholder || "Reply..."
                     placeholderTextColor: Config.Globals.notifReplyPlaceholderColor
                     color: Config.Globals.notifReplyTextColor
                     font.family: Config.Globals.widgetFontFamily
@@ -212,8 +216,9 @@ Item {
 
                     onAccepted: {
                         if (text.length > 0) {
-                            root.notification.sendInlineReply(text);
+                            Services.Mshelld.replyNotification(root.notification.id, text);
                             text = "";
+                            root.dismiss();
                         }
                     }
                 }
@@ -233,7 +238,7 @@ Item {
             onActiveChanged: {
                 if (!active) {
                     if (Math.abs(root.dragOffset) > root.width * 0.35) {
-                        root.notification.dismiss();
+                        root.dismiss();
                     } else {
                         resetAnim.start();
                     }

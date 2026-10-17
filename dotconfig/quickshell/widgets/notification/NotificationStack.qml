@@ -9,7 +9,7 @@ Column {
     width: Config.Globals.notifWidth
 
     Repeater {
-        model: Services.NotificationService.notifications.values
+        model: Services.Mshelld.notifications
 
         NotificationItem {
             required property var modelData

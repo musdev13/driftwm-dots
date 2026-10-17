@@ -1,7 +1,7 @@
 import Quickshell
 import QtQuick
 import "../config"
-import "../services"
+import "../services" as Services
 import "../widgets/notification"
 
 PopupWindow {
@@ -15,7 +15,7 @@ PopupWindow {
     anchor.rect.y: panelHeight
     anchor.edges: Edges.Bottom
 
-    visible: NotificationService.notifications.values.length > 0
+    visible: Services.Mshelld.notifications.length > 0
 
     implicitWidth: Globals.notifWidth
     implicitHeight: stack.implicitHeight

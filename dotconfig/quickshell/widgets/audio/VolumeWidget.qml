@@ -1,45 +1,15 @@
 import QtQuick
 import Quickshell
-import Quickshell.Services.Pipewire
-import Quickshell.Io
 import "../../config" as Config
+import "../../services" as Services
 
 Text {
     id: root
 
-    readonly property var sink: Pipewire.defaultAudioSink
-    readonly property bool muted: sink && sink.audio ? sink.audio.muted : false
-    readonly property real volume: sink && sink.audio ? sink.audio.volume : 0
-    property bool isHeadphones: false
-
-    function toggleMute() {
-        if (root.sink && root.sink.audio)
-            root.sink.audio.muted = !root.sink.audio.muted;
-    }
-
-    PwObjectTracker {
-        objects: Pipewire.defaultAudioSink ? [ Pipewire.defaultAudioSink ] : []
-    }
-
-    Process {
-        id: portProc
-        command: ["pactl", "get-sink-port", "@DEFAULT_SINK@"]
-
-        stdout: SplitParser {
-            onRead: function(line) {
-                root.isHeadphones = line.indexOf("headphone") !== -1;
-            }
-        }
-    }
-
-    Timer {
-        interval: 3000
-        running: true
-        repeat: true
-        onTriggered: portProc.running = true
-    }
-
-    onSinkChanged: portProc.running = true
+    readonly property var sink: Services.Mshelld.audio.sink
+    readonly property bool muted: sink ? sink.muted : false
+    readonly property real volume: sink ? sink.volume : 0
+    readonly property bool isHeadphones: sink && sink.device === "headphones"
 
     text: {
         if (muted)
@@ -55,6 +25,6 @@ Text {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        onClicked: root.toggleMute()
+        onClicked: Services.Mshelld.toggleSinkMute()
     }
 }
