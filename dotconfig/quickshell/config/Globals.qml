@@ -73,4 +73,21 @@ Singleton {
     property int notifReplyPadding: 8
 
     property color notifCloseHoverColor: "#ff5555"
+
+    property color lockBgColor: "#1a1b26"
+    property color lockTextColor: "#ffffff"
+    property color lockSubtextColor: "#a9b1d6"
+    property color lockErrorColor: "#ff5555"
+    property int lockClockSize: 96
+    property int lockDateSize: 20
+    property int lockSpacing: 24
+
+    property color lockFieldBgColor: "#33ffffff"
+    property color lockFieldBorderColor: "#55ffffff"
+    property color lockFieldTextColor: "#ffffff"
+    property int lockFieldWidth: 320
+    property int lockFieldHeight: 44
+    property int lockFieldRadius: 8
+    property int lockFieldPadding: 12
+    property int lockFieldFontSize: 16
 }
