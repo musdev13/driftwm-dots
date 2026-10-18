@@ -88,4 +88,29 @@ Singleton {
     property int lockFieldWidth: 300
     property int lockFieldHeight: 44
     property int lockFieldFontSize: 16
+
+    property int mediaCoverSize: 24
+    property int mediaCoverRadius: 4
+    property int mediaMaxTextWidth: 150
+    property color mediaSubtextColor: "#a0a0a0"
+    property int mediaSubtextSize: 12
+
+    property int mediaPopupWidth: 320
+    property int mediaPopupPadding: 16
+    property int mediaPopupRadius: 12
+    property color mediaPopupBgColor: "#e6202020"
+    property int mediaPopupCoverSize: 96
+    property int mediaPopupTitleSize: 16
+    property int mediaPopupArtistSize: 14
+    property int mediaPopupSpacing: 12
+
+    property color mediaProgressBgColor: "#44ffffff"
+    property color mediaProgressFillColor: "#ffffff"
+    property int mediaProgressHeight: 4
+    property int mediaProgressHandleSize: 10
+
+    property color mediaButtonColor: "#ffffff"
+    property color mediaButtonHoverColor: "#88ffffff"
+    property int mediaButtonSize: 24
+    property int mediaButtonIconSize: 20
 }

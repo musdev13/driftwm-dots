@@ -8,6 +8,7 @@ import "../widgets/ram"
 import "../widgets/battery"
 import "../widgets/audio"
 import "../widgets/divider"
+import "../widgets/media"
 import "NotificationPopup.qml"
 
 Scope {
@@ -38,7 +39,21 @@ Scope {
         }
 
         ClockWidget {
+            id: clock
             anchors.centerIn: parent
+        }
+
+        Row {
+            anchors.left: clock.right
+            anchors.leftMargin: Globals.panelRowSpacing
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: Globals.panelRowSpacing
+
+            DividerWidget { anchors.verticalCenter: parent.verticalCenter }
+            
+            MediaWidget {
+                anchors.verticalCenter: parent.verticalCenter
+            }
         }
 
         Row {
