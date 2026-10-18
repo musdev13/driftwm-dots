@@ -10,6 +10,7 @@ Scope {
     property bool isAuthenticating: false
 
     signal unlocked()
+    signal failed(string msg)
 
     PamContext {
         id: pam
@@ -30,12 +31,14 @@ Scope {
                 root.unlocked();
             } else {
                 root.message = (result === PamResult.MaxTries) ? "Too many attempts" : "Wrong password";
+                root.failed(root.message);
             }
         }
 
         onError: function(err) {
             root.isAuthenticating = false;
             root.message = "Auth error";
+            root.failed(root.message);
         }
     }
 

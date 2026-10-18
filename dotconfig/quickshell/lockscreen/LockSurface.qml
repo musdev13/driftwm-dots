@@ -22,7 +22,10 @@ WlSessionLockSurface {
         dateText = days[now.getDay()] + ", " + now.getDate() + " " + months[now.getMonth()];
     }
 
-    Component.onCompleted: refreshTime()
+    Component.onCompleted: {
+        refreshTime();
+        fadeIn.start();
+    }
 
     Timer {
         interval: 1000
@@ -36,9 +39,28 @@ WlSessionLockSurface {
         onClicked: input.forceActiveFocus()
     }
 
+    Connections {
+        target: surface.context
+        function onFailed() {
+            shakeAnim.start();
+            input.forceActiveFocus();
+        }
+    }
+
     ColumnLayout {
+        id: mainLayout
         anchors.centerIn: parent
         spacing: Globals.lockSpacing
+        opacity: 0
+
+        NumberAnimation {
+            id: fadeIn
+            target: mainLayout
+            property: "opacity"
+            to: 1
+            duration: 500
+            easing.type: Easing.OutCubic
+        }
 
         Text {
             Layout.alignment: Qt.AlignHCenter
@@ -57,22 +79,29 @@ WlSessionLockSurface {
             font.pixelSize: Globals.lockDateSize
         }
 
-        Item { Layout.preferredHeight: Globals.lockSpacing }
+        Item { Layout.preferredHeight: Globals.lockSpacing / 2 }
 
-        Rectangle {
+        Item {
+            id: inputContainer
             Layout.alignment: Qt.AlignHCenter
             implicitWidth: Globals.lockFieldWidth
             implicitHeight: Globals.lockFieldHeight
-            radius: Globals.lockFieldRadius
-            color: Globals.lockFieldBgColor
-            border.color: Globals.lockFieldBorderColor
-            border.width: 1
+
+            transform: Translate { id: shakeTranslate }
+
+            SequentialAnimation {
+                id: shakeAnim
+                NumberAnimation { target: shakeTranslate; property: "x"; to: -12; duration: 50 }
+                NumberAnimation { target: shakeTranslate; property: "x"; to: 12; duration: 50 }
+                NumberAnimation { target: shakeTranslate; property: "x"; to: -10; duration: 50 }
+                NumberAnimation { target: shakeTranslate; property: "x"; to: 10; duration: 50 }
+                NumberAnimation { target: shakeTranslate; property: "x"; to: -5; duration: 50 }
+                NumberAnimation { target: shakeTranslate; property: "x"; to: 0; duration: 50 }
+            }
 
             TextInput {
                 id: input
                 anchors.fill: parent
-                anchors.leftMargin: Globals.lockFieldPadding
-                anchors.rightMargin: Globals.lockFieldPadding
                 verticalAlignment: TextInput.AlignVCenter
                 horizontalAlignment: TextInput.AlignHCenter
                 color: Globals.lockFieldTextColor
@@ -80,11 +109,13 @@ WlSessionLockSurface {
                 font.pixelSize: Globals.lockFieldFontSize
                 echoMode: TextInput.Password
                 passwordCharacter: "•"
-                selectionColor: Globals.lockFieldBorderColor
+                selectionColor: Globals.lockFieldLineActiveColor
                 selectedTextColor: Globals.lockFieldTextColor
                 focus: true
                 clip: true
                 enabled: !(surface.context ? surface.context.isAuthenticating : false)
+                topPadding: 0
+                bottomPadding: 8
 
                 onAccepted: {
                     const pwd = text;
@@ -95,6 +126,18 @@ WlSessionLockSurface {
                 }
 
                 Component.onCompleted: forceActiveFocus()
+            }
+
+            Rectangle {
+                id: underline
+                anchors.bottom: parent.bottom
+                width: parent.width
+                height: 2
+                color: input.activeFocus ? Globals.lockFieldLineActiveColor : Globals.lockFieldLineColor
+                
+                Behavior on color {
+                    ColorAnimation { duration: 200 }
+                }
             }
         }
 
